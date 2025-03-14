@@ -4,39 +4,51 @@ from scipy.stats import binom
 
 def binomial_tail_bound_max(m, k, delta_pc):
     """
-    计算 Binomial Tail Inversion Bound，寻找最大概率 p，使得 Bin(m, k, p) >= delta_pc。
+    max p, s.t. Bin(m, k, p) >= delta_pc。
     """
-    p_values = np.linspace(1, 0, 1000)  # 逆序搜索
+    p_values = np.linspace(1, 0, 1000)
     for p in p_values:
-        if binom.cdf(k, m, p) >= delta_pc:  # CDF 计算 Pr(sum Z_i <= k)
+        if binom.cdf(k, m, p) >= delta_pc:
             return p
-    return 0.0  # 默认返回 0.0
+    return 0.0
 
-# 设置参数
-m = 100  # 训练样本数量
-delta = 0.05  # 置信水平
-c_S_hat = np.arange(0, m + 1)  # 经验误差 k 的取值范围 (整数)
-k_values = c_S_hat  # 直接使用经验误差值 k
+def binomial_tail_bound_min(m, k, delta_pc):
+    """
+    min p, s.t. 1 - Bin(m, k, p) >= delta_pc。
+    """
+    p_values = np.linspace(0, 1, 1000)
+    for p in p_values:
+        if 1 - binom.cdf(k, m, p) >= delta_pc:
+            return p
+    return 1.0
 
-# 假设先验 P(c) 为均匀分布，即所有分类器的 P(c) = 1/N
-N = len(c_S_hat)  # 分类器的总数
-P_c = np.ones(N) / N  # 先验概率 P(c)
+m = 100  # number of the training samples
+delta = 0.05
+c_S_hat = np.arange(0, m + 1)  # number of the empirical errors
+k_values = c_S_hat
 
-# 计算 Binomial Tail Inversion Bound（严格的二项分布界限）
-binomial_bound = np.array([binomial_tail_bound_max(m, k, delta * P_c[i]) for i, k in enumerate(k_values)])
+# assume P(c) = 1/N
+N = len(c_S_hat)  # number of the classifiers
+P_c = np.ones(N) / N  # prior probability of the classifiers
 
-# 计算 Chernoff Bound 近似（Relaxation）
-chernoff_bound = c_S_hat / m + np.sqrt((np.log(1/P_c) + np.log(1/delta)) / (2*m))
+# without relaxation
+binomial_bound_upper = np.array([binomial_tail_bound_max(m, k, delta * P_c[i]) for i, k in enumerate(k_values)])
+binomial_bound_lower = np.array([binomial_tail_bound_min(m, k, delta * P_c[i]) for i, k in enumerate(k_values)])
 
-# 绘制误差界限
+# Chernoff Bound relaxation
+chernoff_bound_upper = c_S_hat / m + np.sqrt((np.log(1/P_c) + np.log(1/delta)) / (2*m))
+chernoff_bound_lower = c_S_hat / m - np.sqrt((np.log(1/P_c) + np.log(1/delta)) / (2*m))
+
 plt.figure(figsize=(8, 6))
-plt.plot(c_S_hat / m, binomial_bound, label="Binomial Tail Inversion Bound (No Relaxation)", linestyle='-', color='blue')
-plt.plot(c_S_hat / m, chernoff_bound, label="Chernoff Bound (Relaxation)", linestyle='--', color='red')
+plt.plot(c_S_hat / m, binomial_bound_upper, label="Binomial Tail Inversion Upper Bound", linestyle='-', color='blue')
+plt.plot(c_S_hat / m, binomial_bound_lower, label="Binomial Tail Inversion Lower Bound", linestyle='-', color='cyan')
 
-# 标注
+plt.plot(c_S_hat / m, chernoff_bound_upper, label="Chernoff Upper Bound", linestyle='--', color='red')
+plt.plot(c_S_hat / m, chernoff_bound_lower, label="Chernoff Lower Bound", linestyle='--', color='orange')
+
 plt.xlabel("Empirical Error Rate (c_S_hat / m)")
 plt.ylabel("Error Bound")
-plt.title("Comparison of Relaxation Before and After")
+plt.title("Comparison of Upper and Lower Bounds with Relaxation")
 plt.legend()
 plt.grid(True)
 plt.show()
