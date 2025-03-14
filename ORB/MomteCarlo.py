@@ -11,7 +11,7 @@ def estimate_Pc(weights, sigma):
 # 设定神经网络权重的标准差
 sigma = 0.1  
 num_samples = 10000  # 采样 10000 组
-d = 1282  # 参数个数
+d = 1284  # 更新后的参数个数
 
 # 生成 10000 组神经网络权重
 weights = np.random.randn(num_samples, d) * sigma  
@@ -23,5 +23,5 @@ P_c = estimate_Pc(weights, sigma)
 plt.hist(P_c, bins=50, density=True)
 plt.xlabel("P(c) Values")
 plt.ylabel("Density")
-plt.title("Estimated P(c) Distribution")
+plt.title("Estimated P(c) Distribution for Neural Network")
 plt.show()
