@@ -25,15 +25,14 @@ def binomial_tail_bound_min(m, k, delta_pc):
 m = 100  # number of the training samples
 delta = 0.05
 c_S_hat = np.arange(0, m + 1)  # number of the empirical errors
-k_values = c_S_hat
 
 # assume P(c) = 1/N
-N = len(c_S_hat)  # number of the classifiers
-P_c = np.ones(N) / N  # prior probability of the classifiers
+N = 20  # number of the classifiers
+P_c = np.ones(len(c_S_hat)) / N  # prior probability of the interested classifier (1/N) for the current c_S_hat
 
 # without relaxation
-binomial_bound_upper = np.array([binomial_tail_bound_max(m, k, delta * P_c[i]) for i, k in enumerate(k_values)])
-binomial_bound_lower = np.array([binomial_tail_bound_min(m, k, delta * P_c[i]) for i, k in enumerate(k_values)])
+binomial_bound_upper = np.array([binomial_tail_bound_max(m, k, delta * P_c[i]) for i, k in enumerate(c_S_hat)])
+binomial_bound_lower = np.array([binomial_tail_bound_min(m, k, delta * P_c[i]) for i, k in enumerate(c_S_hat)])
 
 # Chernoff Bound relaxation
 chernoff_bound_upper = c_S_hat / m + np.sqrt((np.log(1/P_c) + np.log(1/delta)) / (2*m))
