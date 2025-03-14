@@ -1,2 +1,3 @@
 # generalization_error
-![relaxation](https://github.com/user-attachments/assets/e70ca26d-4343-47af-a21b-d3d9a4a3d2a1)
+
+![relaxation](https://github.com/user-attachments/assets/1b2bb3e1-2d87-4edf-8055-6783aa199539)
