@@ -6,6 +6,10 @@ Step 1.
 
 Generate 10000 sets of weights (1284 parameters each).
 
+$$
+w \sim \mathcal{N}(0, \sigma^2)
+$$
+
 
 Step 2.
 
