@@ -29,3 +29,22 @@ $$
 Step 4.
 
 Unify the probability.
+
+
+-----
+-----
+
+
+Step 1.
+
+Load the weight.
+
+
+Step 2.
+
+Assume the distribution. N(0, sigma^2)
+
+
+Step 3.
+
+Calculate the probability of this combination.
