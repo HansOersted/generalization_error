@@ -30,6 +30,9 @@ Step 4.
 
 Unify the probability.
 
+![MC](https://github.com/user-attachments/assets/ff006fa5-7bf6-45f4-b9d5-2f4b6039bb9e)
+
+
 
 -----
 -----
